@@ -34,12 +34,25 @@ public class GreetingController {
     @PostMapping
     public String add(@RequestParam String title, @RequestParam String description,@RequestParam String category, Map<String, Object> model) {
         Goods goods = new Goods(title, description, category);
-
         goodsRepository.save(goods);
 
         Iterable<Goods> goodsIterable = goodsRepository.findAll();
-
         model.put("goods", goodsIterable);
+
+        return "main";
+    }
+
+    @PostMapping("filter")
+    public String filter(@RequestParam String filter, Map<String, Object> model) {
+        Iterable<Goods> goods;
+
+        if (filter != null && !filter.isEmpty()) {
+            goods = goodsRepository.findByTitle(filter);
+        } else {
+            goods = goodsRepository.findAll();
+        }
+
+        model.put("goods", goods);
 
         return "main";
     }
